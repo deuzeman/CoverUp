@@ -3,7 +3,7 @@ function data = calculate_inf(params, data)
     % Note that chimu_n contains lattice artifacts that should not be multiplying the logs!
     data.inf_mps2_n = data.chimu_c .* (1 - 2 * data.xi_c .* data.lbar3_c + data.xi_n .* data.lbar3_n);
     if data.meta.has_iso
-        data.inf_mps2_n = data.inf_mps2_n + params.zeta .* data.afac.^2;
+        data.inf_mps2_n = data.inf_mps2_n + params.zeta .* data.afac.^2 .* (1 + data.xi_n * data.Xibar3);
     end
     
     data.inf_fps  = params.f0 * (1 + data.xi_c .* data.lbar4_c + data.xi_n .* data.lbar4_n);

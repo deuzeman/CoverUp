@@ -72,6 +72,7 @@ function [params, data] = get_starting_values(data)
     
     if data.meta.has_iso
         params.zeta = 0;
+        params.Xi3  = 0;
     end
    
     for idx = 1 : data.meta.num_betas - 1

@@ -11,7 +11,7 @@ function data = calculate_fvol(~, data)
     lbar4 = repmat(data.lbar4_c, [1, 100]);
 
     mat_xi       = 2 * repmat(data.xi_c, 1, 100); % CDH convention for f0!
-    lambda_c     = sqrt(data.inf_mps2) .* data.L;
+    lambda_c     = sqrt(data.chimu_c) .* data.L;
     sqn_lambda_c = lambda_c * sqrt(1:100); % NOTE Replaced by full pion mass, not LO! Probably wrong for GL correction scheme.
     prefactor    = repmat(multiplicity(1:100)', [length(data.mu), 1]) ./ sqn_lambda_c;
 
@@ -50,7 +50,8 @@ function data = calculate_fvol(~, data)
                 data.fvol_mps2_n = data.fvol_mps2;
             end
         case 'CWW'
-            r = repmat(sqrt(data.inf_mps2_n ./ data.inf_mps2), 1, 100);
+            r = repmat(sqrt(data.chimu_n ./ data.chimu_c), 1, 100);
+
             sqn_lambda_n = sqn_lambda_c ./ r;
 
             Rcww_0 = Rcww(0, sqn_lambda_c);
