@@ -8,9 +8,8 @@ function [result, data] = chi(params, data)
     data.chi.fps    = (data.fps    - (data.inf_fps  + data.asq_fps)  .* data.fvol_fps)  ./  data.sd_fps;
     if data.meta.has_iso
         data.chi.mps2_n = (data.mps_n(data.meta.mps_n_mask).^2 - (data.inf_mps2_n(data.meta.mps_n_mask) + data.asq_mps2_n(data.meta.mps_n_mask)) .* ...
-            data.fvol_mps2_n(data.meta.mps_n_mask)) ./ (2 .* data.mps_n(data.meta.mps_n_mask) .* data.sd_mps_n(data.meta.mps_n_mask));
+                data.fvol_mps2_n(data.meta.mps_n_mask)) ./ (2 .* data.mps_n(data.meta.mps_n_mask) .* data.sd_mps_n(data.meta.mps_n_mask));
     end
-
     % Calculate the deviations from the priors, if requested   
     if ~strcmpi(opts.priors, 'OFF')
         data = priors_chisq(params, data);

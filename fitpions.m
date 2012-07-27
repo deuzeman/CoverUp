@@ -62,17 +62,21 @@ function [params, data] = get_starting_values(data)
     params.l3 = almanac.l3.ave;
     params.l4 = almanac.l4.ave;    
     
+    if data.meta.needs_zeta
+        params.zeta = 0;
+    end
+    
+    if data.meta.has_iso
+        params.Xi3  = 0;
+    end
+    
     if data.meta.has_asq
         params.Dm = 0;
         params.Df = 0;
     end
+    
     if data.meta.needs_Dn
         params.Dn = 0;
-    end
-    
-    if data.meta.has_iso
-        params.zeta = 0;
-        params.Xi3  = 0;
     end
    
     for idx = 1 : data.meta.num_betas - 1
@@ -97,6 +101,7 @@ function data = analyze_meta(raw_input)
     data.meta.has_asq = strcmpi(opts.asq, 'ON');
     data.meta.has_iso = strcmpi(opts.iso, 'ON');
     data.meta.needs_Dn = data.meta.has_asq && data.meta.has_iso;
+    data.meta.needs_zeta = data.meta.has_iso || strcmpi(opts.fvol, 'CWW');
     data.meta.mps_n_mask = ~isnan(raw_input.a_mps_n);
     
     data.meta.indices = cell(size(data.meta.betas));

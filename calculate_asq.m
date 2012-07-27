@@ -12,7 +12,7 @@ function data = calculate_asq(params, data)
         data.asq_fps    = params.f0 .* params.Df .* data.afac.^2;
     end
     if data.meta.needs_Dn
-        data.asq_mps2_n = data.chimu_c .* params.Dn .* data.afac.^2;
+        data.asq_mps2_n = params.Dn .* data.afac.^4;
     end
 
 end

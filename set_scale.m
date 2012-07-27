@@ -9,6 +9,7 @@ function [scale, params] = set_scale(params, data)
   
   td.meta.is_dummy = 1;
   td.meta.has_iso = data.meta.has_iso;
+  td.meta.needs_zeta = data.meta.needs_zeta;
   td = calculate_predictions(params, td);
   
   res_fac = td.inf_fps / almanac.fpi;
@@ -41,6 +42,7 @@ function fn_res = fn_phys_rat(params, data, mu)
   td.mu = mu;
   td.meta.is_dummy = 1;
   td.meta.has_iso = data.meta.has_iso;
+  td.meta.needs_zeta = data.meta.needs_zeta;
   td = calculate_predictions(params, td);
   fn_res = sqrt(td.inf_mps2)/ td.inf_fps;
 end
@@ -49,6 +51,7 @@ function mps_n = calc_mps_n(params, data, mu)
   td.mu = mu;
   td.meta.is_dummy = 1;
   td.meta.has_iso = data.meta.has_iso;
+  td.meta.needs_zeta = data.meta.needs_zeta;
   td = calculate_predictions(params, td);
   mps_n = sqrt(td.inf_mps2_n);
 end

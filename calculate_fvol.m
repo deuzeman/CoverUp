@@ -19,22 +19,16 @@ function data = calculate_fvol(~, data)
         case 'OFF'
             data.fvol_fps  = ones(size(data.mps));
             data.fvol_mps2 = ones(size(data.mps));
-            if strcmpi(opts.iso, 'ON')
-                data.fvol_mps2_n = data.fvol_mps2;
-            end
+            data.fvol_mps2_n = data.fvol_mps2;
         case 'GL'
             data.fvol_fps  = 1 ./ (1 + 2 * data.xi_c .* delta1(lambda_c));
             data.fvol_mps2 = 1 ./ (1 - data.xi_c .* delta1(lambda_c));
-            if strcmpi(opts.iso, 'ON')
-                data.fvol_mps2_n = data.fvol_mps2;
-            end
+            data.fvol_mps2_n = data.fvol_mps2;
         case 'BMW'
             mpl = data.mps .* data.L;
             data.fvol_fps  =  1 - 11.31937 * exp(-mpl) .* mpl.^(-1.5);
             data.fvol_mps2 = (1 + 7.706548 * exp(-mpl) .* mpl.^(-1.5)).^2;
-            if strcmpi(opts.iso, 'ON')
-                data.fvol_mps2_n = data.fvol_mps2;
-            end
+            data.fvol_mps2_n = data.fvol_mps2;
         case 'CDH'
             I_mps_2 = -2 * besselk(1, sqn_lambda_c);
             I_mps_4 = (1 / 9) * (101 - 39 * pi + 72 * lbar1 + 48 * lbar2 - 45 * lbar3 - 36 * lbar4) .* besselk(1, sqn_lambda_c) ...
@@ -46,9 +40,7 @@ function data = calculate_fvol(~, data)
 
             data.fvol_fps  = 1 + sum(prefactor .* (mat_xi .* I_fps_2 + mat_xi.^2 .* I_fps_4), 2);
             data.fvol_mps2 = (1 - sum(0.5 * prefactor .* (mat_xi .* I_mps_2 + mat_xi.^2 .* I_mps_4), 2)).^2;
-            if strcmpi(opts.iso, 'ON')
-                data.fvol_mps2_n = data.fvol_mps2;
-            end
+            data.fvol_mps2_n = data.fvol_mps2;
         case 'CWW'
             r = repmat(sqrt(data.chimu_n ./ data.chimu_c), 1, 100);
 

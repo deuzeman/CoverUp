@@ -14,6 +14,7 @@ nf2 = [b390; b405];
 
 b190(b190.L == 20, :) = [];
 nf211(nf211.L == 20, :) = [];
+nf211([2,9],:) = [];
 
 almanac.mpi     = 139.6;
 almanac.fpi     = 130.7;
@@ -37,9 +38,9 @@ almanac.l4.ave =  4.4;
 almanac.l4.std =  0.2;
 
 opts.asq  = 'ON'; % Other option: 'OFF'
-opts.iso = 'ON'; % Oter option: 'OFF'
-opts.fvol = 'CWW'; % Other options:  'CWW', 'BMW', 'GL', 'OFF'
+opts.iso = 'OFF'; % Oter option: 'ON'
+opts.fvol = 'CDH'; % Other options:  'CWW', 'BMW', 'GL', 'OFF'
 opts.plot = 'ON'; % Other option: 'OFF'
-opts.priors = 'ON'; % Other options: 'MIN', 'OFF'
+opts.priors = 'MIN'; % Other options: 'ON', 'OFF'
 opts.nnlo = 'OFF'; % Other options: 'BAER', 'ON'
 opts.wipe = 'ON'; % Other options: 'OFF'
