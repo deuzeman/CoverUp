@@ -3,7 +3,7 @@ function display_results(params, data)
     
     bcols = {'r', 'g', 'b'};
     
-    data = calculate_predictions(params, data);
+    [~, data] = chi(params, data);
     
     mu_max = ceil(5.0 * max(data.mu)) / 5.0;
     plot_data.mu = data.scale.mu : mu_max / 250 : mu_max;
