@@ -10,6 +10,7 @@ function display_results(params, data)
     plot_data.meta.is_dummy = 1;
     plot_data.meta.has_iso  = data.meta.has_iso;
     plot_data.meta.needs_zeta = data.meta.needs_zeta;
+    plot_data.meta.has_nnlo = data.meta.has_nnlo;
   
     plot_data = calculate_predictions(params, plot_data);
 

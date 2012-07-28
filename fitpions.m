@@ -79,6 +79,11 @@ function [params, data] = get_starting_values(data)
         params.Dn = 0;
     end
    
+    if data.meta.has_nnlo
+        params.km = 0;
+        params.kf = 0;
+    end
+    
     for idx = 1 : data.meta.num_betas - 1
         % Note that the lattice spacings are given in fm,
         % so one needs to invert them for MeV.
@@ -100,6 +105,7 @@ function data = analyze_meta(raw_input)
     data.meta.is_dummy = 0;
     data.meta.has_asq = strcmpi(opts.asq, 'ON');
     data.meta.has_iso = strcmpi(opts.iso, 'ON');
+    data.meta.has_nnlo = strcmpi(opts.nnlo, 'ON');
     data.meta.needs_Dn = data.meta.has_asq && data.meta.has_iso;
     data.meta.needs_zeta = data.meta.has_iso || strcmpi(opts.fvol, 'CWW');
     data.meta.mps_n_mask = ~isnan(raw_input.a_mps_n);
