@@ -1,4 +1,4 @@
-function data = calculate_fvol(~, data)
+function data = calculate_fvol(data)
     global opts;
     
     if data.meta.is_dummy

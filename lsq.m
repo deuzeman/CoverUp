@@ -1,11 +1,11 @@
-function result = lsq(params, data)
-    names = fieldnames(params);
+function data = lsq(data)
+    names = fieldnames(data.params);
     problem.solver = 'lsqnonlin';
     problem.options = optimset('MaxIter', 200, 'Display', 'off');
     problem.objective = @(x)(s2v(chi(v2s(x, names), data)));
-    problem.x0 = s2v(params);
+    problem.x0 = s2v(data.params);
     vres = lsqnonlin(problem);
-    result = v2s(vres, names);
+    data.params = v2s(vres, names);
 end
 
 function st = v2s(vec, names)

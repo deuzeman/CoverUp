@@ -1,10 +1,10 @@
-function display_results(params, data)
+function display_results(data)
     global almanac;
     global opts;
     
     bcols = {'r', 'g', 'b'};
     
-    [~, data] = chi(params, data);
+    [~, data] = chi(data.params, data);
     
     mu_max = ceil(5.0 * max(data.mu)) / 5.0;
     plot_data.mu = data.scale.mu : mu_max / 250 : mu_max;
@@ -12,8 +12,9 @@ function display_results(params, data)
     plot_data.meta.has_iso  = data.meta.has_iso;
     plot_data.meta.needs_zeta = data.meta.needs_zeta;
     plot_data.meta.has_nnlo = data.meta.has_nnlo;
+    plot_data.params = data.params;
   
-    plot_data = calculate_predictions(params, plot_data);
+    plot_data = calculate_predictions(plot_data);
 
     plot_data.inf_mps = sqrt(plot_data.inf_mps2);
     plot_data.inf_mps2_mu = plot_data.inf_mps2 ./ plot_data.mu;
@@ -72,7 +73,7 @@ function display_results(params, data)
         hold on;
         plot(plot_data.mu, sqrt(plot_data.inf_mps2_n), 'LineWidth', 2, 'Color', 'b');
         for idx = 1 : data.meta.num_betas
-            errorbar(data.mu(data.meta.indices{idx}), sqrt((data.mps2_n(data.meta.indices{idx}) + params.zeta * data.afac(data.meta.indices{idx}).^2 - data.asq_mps2_n(data.meta.indices{idx})) ./ data.fvol_mps2_n(data.meta.indices{idx})), ...
+            errorbar(data.mu(data.meta.indices{idx}), sqrt((data.mps2_n(data.meta.indices{idx}) + data.params.zeta * data.afac(data.meta.indices{idx}).^2 - data.asq_mps2_n(data.meta.indices{idx})) ./ data.fvol_mps2_n(data.meta.indices{idx})), ...
                      data.sd_mps_n(data.meta.indices{idx}), ...
                      'o', 'MarkerFaceColor', bcols{idx}, 'MarkerEdgeColor', 'k', 'LineWidth', 2, 'Color', 'k');
         end
@@ -89,27 +90,27 @@ function display_results(params, data)
     fprintf('====================================\n');
     fprintf('  Results\n');
     fprintf('    a                 : %7.4f fm\n', data.scale.a * almanac.mev_fm);
-    fprintf('    f_0               : %7.3f MeV\n', params.f0);
-    fprintf('    f_pi / f_0        : %7.3f\n\n', almanac.fpi / params.f0);
-    fprintf('    B_0               : %7.3f MeV\n', params.B0);
-    fprintf('    2 B_0 mu / m_pi^2 : %7.3f\n\n', 2 * params.B0 * data.scale.mu / almanac.mpi^2);
-    fprintf('    \\bar{l}_1         : %7.3f\n', params.l1);
-    fprintf('    \\bar{l}_2         : %7.3f\n', params.l2);
-    fprintf('    \\bar{l}_3         : %7.3f\n', params.l3);
-    fprintf('    \\bar{l}_4         : %7.3f\n\n', params.l4);
+    fprintf('    f_0               : %7.3f MeV\n', data.params.f0);
+    fprintf('    f_pi / f_0        : %7.3f\n\n', almanac.fpi / data.params.f0);
+    fprintf('    B_0               : %7.3f MeV\n', data.params.B0);
+    fprintf('    2 B_0 mu / m_pi^2 : %7.3f\n\n', 2 * data.params.B0 * data.scale.mu / almanac.mpi^2);
+    fprintf('    \\bar{l}_1         : %7.3f\n', data.params.l1);
+    fprintf('    \\bar{l}_2         : %7.3f\n', data.params.l2);
+    fprintf('    \\bar{l}_3         : %7.3f\n', data.params.l3);
+    fprintf('    \\bar{l}_4         : %7.3f\n\n', data.params.l4);
     if data.meta.has_asq
-        fprintf('    D_m               : %7.3f fm^2\n', params.Dm / (data.scale.a * almanac.mev_fm)^2);
-        fprintf('    D_f               : %7.3f fm^2\n', params.Df / (data.scale.a * almanac.mev_fm)^2);
+        fprintf('    D_m               : %7.3f fm^2\n', data.params.Dm / (data.scale.a * almanac.mev_fm)^2);
+        fprintf('    D_f               : %7.3f fm^2\n', data.params.Df / (data.scale.a * almanac.mev_fm)^2);
         if data.meta.needs_Dn
-            fprintf('    D_n              : %7.3f fm^2\n', params.Dn / (data.scale.a * almanac.mev_fm)^2);
+            fprintf('    D_n              : %7.3f fm^2\n', data.params.Dn / (data.scale.a * almanac.mev_fm)^2);
         end
     end
 
     if data.meta.needs_zeta
-        fprintf('    \\zeta             : %7.3e fm^2\n', params.zeta / (data.scale.a * almanac.mev_fm)^2);
+        fprintf('    \\zeta             : %7.3e fm^2\n', data.params.zeta / (data.scale.a * almanac.mev_fm)^2);
     end
     if data.meta.has_iso
-        fprintf('    \\Xi_3             : %7.3f\n', params.Xi3);
+        fprintf('    \\Xi_3             : %7.3f\n', data.params.Xi3);
     end
     fprintf('====================================\n');
     fprintf('  Details\n');

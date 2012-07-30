@@ -1,7 +1,8 @@
 function [result, data] = chi(params, data)
     global opts;
    
-    data = calculate_predictions(params, data);
+    data.params = params;
+    data = calculate_predictions(data);
 
     % Calculate the deviation in the pion mass and decay constant
     data.chi.mps = (data.mps - sqrt((data.inf_mps2 + data.asq_mps2) .* data.fvol_mps2)) ./ data.sd_mps;
@@ -12,13 +13,13 @@ function [result, data] = chi(params, data)
     end
     % Calculate the deviations from the priors, if requested   
     if ~strcmpi(opts.priors, 'OFF')
-        data = priors_chisq(params, data);
+        data = priors_chisq(data);
     end
 
     result = data.chi;
 end
 
-function data = priors_chisq(params, data)
+function data = priors_chisq(data)
     global almanac;
     global opts;
        
@@ -31,20 +32,20 @@ function data = priors_chisq(params, data)
     idx = 1;
     for beta_ctr = 1 : data.meta.num_betas - 1
         if ~strcmpi(opts.priors, 'NOZP')
-            data.chi.priors(idx) = (params.(data.meta.fn_zfac{ceil(idx / 2)}) - data.meta.zfac(ceil(idx / 2))) / data.meta.sd_zfac(ceil(idx / 2)); 
+            data.chi.priors(idx) = (data.params.(data.meta.fn_zfac{ceil(idx / 2)}) - data.meta.zfac(ceil(idx / 2))) / data.meta.sd_zfac(ceil(idx / 2)); 
         end
-        data.chi.priors(idx + 1) = (params.(data.meta.fn_afac{ceil(idx / 2)}) - data.meta.afac(ceil(idx / 2))) / data.meta.sd_afac(ceil(idx / 2)); 
+        data.chi.priors(idx + 1) = (data.params.(data.meta.fn_afac{ceil(idx / 2)}) - data.meta.afac(ceil(idx / 2))) / data.meta.sd_afac(ceil(idx / 2)); 
         idx = idx + 2;
     end
     
     if has_l12
-        data.chi.priors(idx)     = (params.l1 - almanac.l1.ave) / almanac.l1.std;
-        data.chi.priors(idx + 1) = (params.l2 - almanac.l2.ave) / almanac.l2.std;
+        data.chi.priors(idx)     = (data.params.l1 - almanac.l1.ave) / almanac.l1.std;
+        data.chi.priors(idx + 1) = (data.params.l2 - almanac.l2.ave) / almanac.l2.std;
         idx = idx + 2;
     end
     
     if strcmpi(opts.priors, 'ON')
-        data.chi.priors(idx)     = (params.l3 - almanac.l3.ave) / almanac.l3.std;
-        data.chi.priors(idx + 1) = (params.l4 - almanac.l4.ave) / almanac.l4.std;
+        data.chi.priors(idx)     = (data.params.l3 - almanac.l3.ave) / almanac.l3.std;
+        data.chi.priors(idx + 1) = (data.params.l4 - almanac.l4.ave) / almanac.l4.std;
     end
 end

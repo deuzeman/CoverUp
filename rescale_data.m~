@@ -5,7 +5,7 @@ function data = rescale_data(data)
         return
     end
 
-    data = get_facs(data);
+    data = get_facs(data.params, data);
     data.scale.a2 = data.afac.^2 .* data.scale.a.^2;
 
     data.mps = data.mps .* data.afac;
@@ -19,7 +19,7 @@ function data = rescale_data(data)
     data.sd_mps_n = data.sd_mps_n .* data.afac;
 end
 
-function data = get_facs(data)
+function data = get_facs(data.params, data)
     data.afac = ones(size(data.mu));
     data.zfac = ones(size(data.mu));
    
