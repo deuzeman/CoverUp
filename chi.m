@@ -4,8 +4,8 @@ function [result, data] = chi(params, data)
     data = calculate_predictions(params, data);
 
     % Calculate the deviation in the pion mass and decay constant
-    data.chi.mps2   = (data.mps.^2 - (data.inf_mps2 + data.asq_mps2) .* data.fvol_mps2) ./ (2 .* data.mps .* data.sd_mps);
-    data.chi.fps    = (data.fps    - (data.inf_fps  + data.asq_fps)  .* data.fvol_fps)  ./  data.sd_fps;
+    data.chi.mps = (data.mps - sqrt((data.inf_mps2 + data.asq_mps2) .* data.fvol_mps2)) ./ data.sd_mps;
+    data.chi.fps = (data.fps - (data.inf_fps  + data.asq_fps)  .* data.fvol_fps)  ./  data.sd_fps;
     if data.meta.has_iso
         data.chi.mps2_n = (data.mps_n(data.meta.mps_n_mask).^2 - (data.inf_mps2_n(data.meta.mps_n_mask) + data.asq_mps2_n(data.meta.mps_n_mask)) .* ...
                 data.fvol_mps2_n(data.meta.mps_n_mask)) ./ (2 .* data.mps_n(data.meta.mps_n_mask) .* data.sd_mps_n(data.meta.mps_n_mask));
@@ -24,14 +24,17 @@ function data = priors_chisq(params, data)
        
     has_l12 = strcmpi(opts.fvol, 'CDH') || strcmpi(opts.fvol, 'CWW');
     
-    num_priors = (data.meta.num_betas - 1) + 2 * has_l12 + 2 * strcmpi(opts.priors, 'ON');
+    num_priors = 2 * (data.meta.num_betas - 1) + 2 * has_l12 + 2 * strcmpi(opts.priors, 'ON');
 
     data.chi.priors = zeros(num_priors, 1);
     
     idx = 1;
     for beta_ctr = 1 : data.meta.num_betas - 1
-        data.chi.priors(idx) = (params.(data.meta.fn_zfac{idx}) - data.meta.zfac(idx)) / data.meta.sd_zfac(1); 
-        idx = idx + 1;
+        if ~strcmpi(opts.priors, 'NOZP')
+            data.chi.priors(idx) = (params.(data.meta.fn_zfac{ceil(idx / 2)}) - data.meta.zfac(ceil(idx / 2))) / data.meta.sd_zfac(ceil(idx / 2)); 
+        end
+        data.chi.priors(idx + 1) = (params.(data.meta.fn_afac{ceil(idx / 2)}) - data.meta.afac(ceil(idx / 2))) / data.meta.sd_afac(ceil(idx / 2)); 
+        idx = idx + 2;
     end
     
     if has_l12

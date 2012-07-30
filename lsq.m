@@ -1,7 +1,7 @@
 function result = lsq(params, data)
     names = fieldnames(params);
     problem.solver = 'lsqnonlin';
-    problem.options = optimset('MaxIter', 200, 'Display', 'iter');
+    problem.options = optimset('MaxIter', 200, 'Display', 'off');
     problem.objective = @(x)(s2v(chi(v2s(x, names), data)));
     problem.x0 = s2v(params);
     vres = lsqnonlin(problem);

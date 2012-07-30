@@ -18,7 +18,7 @@ function [params, scale] = fitpions(raw_input, start, start_scale)
     end
 
     % Using these estimated scales, set up a manual iteration
-    for sc_iter = 1 : 50
+    for sc_iter = 1 : 20
         % Produce a physical data set from the raw format
         data.mu  = raw_input.a_mu / (data.scale.a * data.scale.zp);               
         data.L = raw_input.L * data.scale.a;
@@ -87,7 +87,7 @@ function [params, data] = get_starting_values(data)
     for idx = 1 : data.meta.num_betas - 1
         % Note that the lattice spacings are given in fm,
         % so one needs to invert them for MeV.
-        params.(data.meta.fn_afac{idx}) = data.meta.a(end) / data.meta.a(idx);
+        params.(data.meta.fn_afac{idx}) = data.meta.r0(end) / data.meta.r0(idx);
         params.(data.meta.fn_zfac{idx}) = data.meta.zfac(idx);
     end
     
@@ -120,6 +120,8 @@ function data = analyze_meta(raw_input)
         data.meta.a(idx) = unique(raw_input.a(data.meta.indices{idx})) / almanac.mev_fm;
         data.meta.zp(idx) = unique(raw_input.Zp(data.meta.indices{idx}));
         data.meta.sd_zp(idx) = unique(raw_input.sd_Zp(data.meta.indices{idx}));
+        data.meta.r0(idx) = unique(raw_input.r0_a(data.meta.indices{idx}));
+        data.meta.sd_r0(idx) = unique(raw_input.sd_r0_a(data.meta.indices{idx}));
     end
     
     if data.meta.num_betas < 2
@@ -130,6 +132,8 @@ function data = analyze_meta(raw_input)
     data.meta.fn_afac = cell(data.meta.num_betas - 1, 1);
     data.meta.zfac = ones(data.meta.num_betas - 1, 1);
     data.meta.sd_zfac = zeros(data.meta.num_betas - 1, 1);
+    data.meta.afac = ones(data.meta.num_betas - 1, 1);
+    data.meta.sd_afac = zeros(data.meta.num_betas - 1, 1);
     
     for idx = 1 : data.meta.num_betas - 1
         data.meta.fn_zfac{idx} = sprintf('z_%u_over_%u', 1000 * data.meta.betas(idx), 1000 * data.meta.betas(end));
@@ -137,5 +141,8 @@ function data = analyze_meta(raw_input)
         data.meta.zfac(idx) = data.meta.zp(idx) / data.meta.zp(end);
         data.meta.sd_zfac(idx) = data.meta.zfac(idx) * ...
             sqrt((data.meta.sd_zp(idx) / data.meta.zp(idx))^2 + (data.meta.sd_zp(end) / data.meta.zp(end))^2);
+        data.meta.afac(idx) = data.meta.r0(idx) / data.meta.r0(end);
+        data.meta.sd_afac(idx) = data.meta.afac(idx) * ...
+            sqrt((data.meta.sd_r0(idx) / data.meta.r0(idx))^2 + (data.meta.sd_r0(end) / data.meta.r0(end))^2);
     end
 end

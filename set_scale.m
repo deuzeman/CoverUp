@@ -2,7 +2,7 @@ function [scale, params] = set_scale(params, data)
   global almanac;
   
   phys_rat = almanac.mpi / almanac.fpi;
-  phys_diff = @(pmu)(phys_rat - fn_phys_rat(params, data, pmu));
+  phys_diff = @(pmu)(real(phys_rat - fn_phys_rat(params, data, pmu)));
   
   mu_max = max(data.mu);
   td.mu = fzero(phys_diff, [eps, mu_max]);

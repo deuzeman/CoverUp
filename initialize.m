@@ -5,16 +5,10 @@ comp = readdata('compact.dat'); %load dataset
 b190 = comp(comp.beta==1.90,:);
 b195 = comp(comp.beta==1.95,:);
 b210 = comp(comp.beta==2.10,:);
-b380 = comp(comp.beta==3.80,:);
-b390 = comp(comp.beta==3.90,:);
-b405 = comp(comp.beta==4.05,:);
 
 nf211 = [b190; b195; b210];
-nf2 = [b390; b405];
-
-%b190(b190.L == 20, :) = [];
-%nf211(nf211.L == 20, :) = [];
-%nf211([2,9],:) = [];
+nf211_un = nf211;
+nf211_un([2, 8], :) = [];
 
 almanac.mpi     = 139.6;
 almanac.fpi     = 130.7;
@@ -41,6 +35,6 @@ opts.asq  = 'ON'; % Other option: 'OFF'
 opts.iso = 'OFF'; % Oter option: 'ON'
 opts.fvol = 'CDH'; % Other options:  'CWW', 'BMW', 'GL', 'OFF'
 opts.plot = 'ON'; % Other option: 'OFF'
-opts.priors = 'MIN'; % Other options: 'ON', 'OFF'
+opts.priors = 'MIN'; % Other options: 'ON', 'OFF', 'NOZP'
 opts.nnlo = 'OFF'; % Other options: 'BAER', 'ON'
 opts.wipe = 'ON'; % Other options: 'OFF'
