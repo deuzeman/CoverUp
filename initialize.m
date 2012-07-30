@@ -38,3 +38,4 @@ opts.plot = 'ON'; % Other option: 'OFF'
 opts.priors = 'MIN'; % Other options: 'ON', 'OFF', 'NOZP'
 opts.nnlo = 'OFF'; % Other options: 'BAER', 'ON'
 opts.wipe = 'ON'; % Other options: 'OFF'
+opts.nboot = 100; % Number of samples
