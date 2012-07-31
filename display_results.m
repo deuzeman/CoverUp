@@ -107,10 +107,10 @@ function display_results(data)
     end
 
     if data.meta.needs_zeta
-        fprintf('    \\zeta             : %7.3e fm^2\n', data.params.zeta / (data.scale.a * almanac.mev_fm)^2, data.sd_params.zeta / (data.scale.a * almanac.mev_fm)^2);
+        fprintf('    \\zeta             : %7.3e +/- %7.3e fm^2\n', data.params.zeta / (data.scale.a * almanac.mev_fm)^2, data.sd_params.zeta / (data.scale.a * almanac.mev_fm)^2);
     end
     if data.meta.has_iso
-        fprintf('    \\Xi_3             : %7.3f\n', data.params.Xi3, data.sd_params.Xi3);
+        fprintf('    \\Xi_3             : %7.3f +/- %7.3e fm\n', data.params.Xi3, data.sd_params.Xi3);
     end
     fprintf('====================================\n');
     fprintf('  Details\n');

@@ -28,4 +28,11 @@ function data = multiply_a(data)
     data.sd_mps = data.raw.sd_a_mps / data.scale.a;
     data.mps_n    = data.raw.a_mps_n / data.scale.a;
     data.sd_mps_n = data.raw.sd_a_mps_n / data.scale.a;
+    
+    data.mn       = data.raw.a_mn / data.scale.a;
+    data.sd_mn    = data.raw.sd_a_mn / data.scale.a;
+    data.mk       = data.raw.a_mk / data.scale.a;
+    data.sd_mk    = data.raw.sd_a_mk / data.scale.a;
+    data.md       = data.raw.a_md / data.scale.a;
+    data.sd_md    = data.raw.sd_a_md / data.scale.a;
 end
