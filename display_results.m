@@ -124,6 +124,13 @@ function display_results(data)
         fprintf('      From priors      : %5.2f\n', sum((data.chi.priors).^2));
     end
     fprintf('    Chi squared / dof  : %5.2f\n', sum(s2v(data.chi).^2) / (length(s2v(data.chi)) - 6 - data.meta.has_asq * 2 - data.meta.needs_Dn - data.meta.needs_zeta - data.meta.has_iso));
+    
+    % Prepare data for writeout
+    data_write = [data.mu, data.L, ...
+                  data.mps, data.sd_mps, data.fps, data.sd_fps, data.mps_n, data.sd_mps_n, ...
+                  data.fvol_mps, data.asq_mps, data.fvol_fps, data.asq_fps, ...
+                  data.mn,  data.sd_mn,  data.mk, data.sd_mk, data.md, data.sd_md];
+    plot_write = [plot_data.mu, plot_data.inf_mps, plot_data.inf_fps, sqrt(plot_data.inf_mps2_n)];
 end
 
 function vec = s2v(st)
