@@ -1,4 +1,4 @@
-function display_results(data)
+function data = display_results(data)
     global almanac;
     global opts;
     

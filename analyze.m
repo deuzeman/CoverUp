@@ -33,5 +33,5 @@ function data = analyze(data)
     
     close(hw);
     
-    display_results(data);
+    data = display_results(data);
 end

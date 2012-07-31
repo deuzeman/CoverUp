@@ -8,7 +8,7 @@ b210 = comp(comp.beta==2.10,:);
 
 nf211 = [b190; b195; b210];
 nf211_un = nf211;
-nf211_un([2, 8], :) = [];
+nf211_un([1, 2, 8, 9, 16],:) = [];
 
 almanac.mpi     = 139.6;
 almanac.fpi     = 130.7;

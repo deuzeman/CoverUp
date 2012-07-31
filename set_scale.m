@@ -58,7 +58,7 @@ function mps_n = calc_mps_n(data, mu)
   td.meta.needs_zeta = data.meta.needs_zeta;
   td.meta.has_nnlo = data.meta.has_nnlo;
   td.params = data.params;
-  td = calculate_predictions(params, td);
+  td = calculate_predictions(td);
   mps_n = sqrt(td.inf_mps2_n);
 end
 
