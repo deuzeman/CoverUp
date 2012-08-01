@@ -41,12 +41,12 @@ function data = prepare_data(raw)
     data.meta.sd_afac = zeros(data.meta.num_betas - 1, 1);
     
     for idx = 1 : data.meta.num_betas - 1
-        data.meta.fn_zfac{idx} = sprintf('z_%u_over_%u', 1000 * data.meta.betas(idx), 1000 * data.meta.betas(end));
-        data.meta.fn_afac{idx} = sprintf('a_%u_over_%u', 1000 * data.meta.betas(idx), 1000 * data.meta.betas(end));
+        data.meta.fn_zfac{idx} = sprintf('z_%u_over_%u', 1000 * data.meta.betas(end), 1000 * data.meta.betas(idx));
+        data.meta.fn_afac{idx} = sprintf('a_%u_over_%u', 1000 * data.meta.betas(end), 1000 * data.meta.betas(idx));
         data.meta.zfac(idx) = data.meta.zp(idx) / data.meta.zp(end);
         data.meta.sd_zfac(idx) = data.meta.zfac(idx) * ...
             sqrt((data.meta.sd_zp(idx) / data.meta.zp(idx))^2 + (data.meta.sd_zp(end) / data.meta.zp(end))^2);
-        data.meta.afac(idx) = data.meta.r0(idx) / data.meta.r0(end);
+        data.meta.afac(idx) = data.meta.r0(end) / data.meta.r0(idx);
         data.meta.sd_afac(idx) = data.meta.afac(idx) * ...
             sqrt((data.meta.sd_r0(idx) / data.meta.r0(idx))^2 + (data.meta.sd_r0(end) / data.meta.r0(end))^2);
     end

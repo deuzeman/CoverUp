@@ -7,13 +7,18 @@ b195 = comp(comp.beta==1.95,:);
 b210 = comp(comp.beta==2.10,:);
 
 nf211 = [b190; b195; b210];
-nf211_un = nf211;
-nf211_un([1, 2, 8, 9, 16],:) = [];
+nf211_unique = nf211;
+nf211_unique([2, 10],:) = [];
+nf211_tuned = [b190; b210];
+nf211_tuned(2,:) = [];
+nf211_strict = nf211;
+nf211_strict([1, 2, 8, 10, 16],:) = [];
 
 almanac.mpi     = 139.6;
 almanac.fpi     = 130.7;
 almanac.mK      = 493.7;
 almanac.fK      = 159.8;
+almanac.mD      = 1869.6;
 almanac.mN      = 939;
 almanac.mDelta  = 1232;
 almanac.gA      = 1.2695;
@@ -38,4 +43,5 @@ opts.plot = 'ON'; % Other option: 'OFF'
 opts.priors = 'MIN'; % Other options: 'ON', 'OFF', 'NOZP'
 opts.nnlo = 'OFF'; % Other options: 'BAER', 'ON'
 opts.wipe = 'ON'; % Other options: 'OFF'
-opts.nboot = 100; % Number of samples
+opts.nboot = 10; % Number of samples -- low default for quick checks
+opts.fit_cnt = 1; % For use in disambiguating results.

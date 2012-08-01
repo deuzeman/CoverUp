@@ -6,7 +6,7 @@ function data = calculate_inf(data)
         data.inf_mps2_n = data.inf_mps2_n + data.params.zeta .* data.afac.^2;
     end
     if data.meta.has_iso
-         data.inf_mps2_n = data.inf_mps2_n + data.params.zeta .* data.afac.^2 .* data.xi_n .* data.Xibar3_n;
+         data.inf_mps2_n = data.inf_mps2_n + data.params.zeta .* data.xi_n .* data.Xibar3_n .* data.afac.^2;
     end
 
     data.inf_fps  = data.params.f0 * (1 + data.xi_c .* data.lbar4_c + data.xi_n .* data.lbar4_n);
