@@ -9,7 +9,9 @@ function data = analyze(data)
 
     hw = waitbar(0, 'Running calculation...');
     data = fitpions(data);
-    data = fit_nucleons(data);
+    if (sum(~isnan(data.mn)) > 5)
+        data = fit_nucleons(data);
+    end
 
     boot_params = zeros(length(fieldnames(data.params)), opts.nboot);
     boot_scale = zeros(length(fieldnames(data.scale)), opts.nboot);

@@ -7,15 +7,15 @@ function data = set_scale(data)
   mu_max = max(data.mu);
   td.mu = fzero(phys_diff, [eps, mu_max]);
   
-  td.meta.is_dummy = 1;
-  td.meta.has_iso = data.meta.has_iso;
-  td.meta.needs_zeta = data.meta.needs_zeta;
-  td.meta.has_nnlo = data.meta.has_nnlo;
+  td.meta = data.meta;
   td.params = data.params;
+  td.L = Inf;
+  td.scale.a = 0;
+  td.afac = 0;
   td = calculate_predictions(td);
   
   res_fac = td.inf_fps / almanac.fpi;
-  data.scale.a = res_fac * data.scale.a; % Inverse?
+  data.scale.a = res_fac * data.scale.a;
   data.scale.mu = td.mu / res_fac;
   data = fit_zp(data);
 
@@ -42,10 +42,10 @@ end
 
 function fn_res = fn_phys_rat(data, mu)
   td.mu = mu;
-  td.meta.is_dummy = 1;
-  td.meta.has_iso = data.meta.has_iso;
-  td.meta.needs_zeta = data.meta.needs_zeta;
-  td.meta.has_nnlo = data.meta.has_nnlo;
+  td.meta = data.meta;
+  td.scale.a = 0;
+  td.afac = 0;
+  td.L = Inf;
   td.params = data.params;
   td = calculate_predictions(td);
   fn_res = sqrt(td.inf_mps2)/ td.inf_fps;
@@ -53,10 +53,10 @@ end
 
 function mps_n = calc_mps_n(data, mu)
   td.mu = mu;
-  td.meta.is_dummy = 1;
-  td.meta.has_iso = data.meta.has_iso;
-  td.meta.needs_zeta = data.meta.needs_zeta;
-  td.meta.has_nnlo = data.meta.has_nnlo;
+  td.meta = data.meta;
+  td.scale.a = 0;
+  td.afac = 0;
+  td.L = Inf;
   td.params = data.params;
   td = calculate_predictions(td);
   mps_n = sqrt(td.inf_mps2_n);

@@ -5,11 +5,15 @@ function [result, data] = chi(params, data)
     data = calculate_predictions(data);
 
     % Calculate the deviation in the pion mass and decay constant
-    data.chi.mps = (data.mps - sqrt((data.inf_mps2 + data.asq_mps2) .* data.fvol_mps2)) ./ data.sd_mps;
-    data.chi.fps = (data.fps - (data.inf_fps  + data.asq_fps)  .* data.fvol_fps)  ./  data.sd_fps;
+    data.dev.mps2 =   data.mps.^2 - (data.inf_mps2 + data.asq_mps2) .* data.fvol_mps2;
+    data.dev.fps =   data.fps - (data.inf_fps  + data.asq_fps)  .* data.fvol_fps;
+    data.dev.mps2_n = data.mps_n.^2 - (data.inf_mps2_n + data.asq_mps2_n) .* data.fvol_mps2_n;
+    
+    data.chi.mps2 = data.dev.mps2 ./ (2 * data.mps .* data.sd_mps);
+    data.chi.fps = data.dev.fps ./ data.sd_fps;
     if data.meta.has_iso
-        data.chi.mps2_n = (data.mps_n(data.meta.mps_n_mask).^2 - (data.inf_mps2_n(data.meta.mps_n_mask) + data.asq_mps2_n(data.meta.mps_n_mask)) .* ...
-                data.fvol_mps2_n(data.meta.mps_n_mask)) ./ (2 .* data.mps_n(data.meta.mps_n_mask) .* data.sd_mps_n(data.meta.mps_n_mask));
+        data.chi.mps2_n = data.dev.mps2_n ./ (2 * data.mps_n .* data.sd_mps_n);
+        data.chi.mps2_n(isnan(data.chi.mps2_n)) = [];
     end
     % Calculate the deviations from the priors, if requested   
     if ~strcmpi(opts.priors, 'OFF')

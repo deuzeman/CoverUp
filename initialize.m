@@ -10,7 +10,7 @@ nf211 = [b190; b195; b210];
 nf211_unique = nf211;
 nf211_unique([2, 10],:) = [];
 nf211_tuned = [b190; b210];
-nf211_tuned(2,:) = [];
+nf211_tuned([2, end],:) = [];
 nf211_strict = nf211;
 nf211_strict([1, 2, 8, 10, 16],:) = [];
 
@@ -42,6 +42,7 @@ opts.fvol = 'CDH'; % Other options:  'CWW', 'BMW', 'GL', 'OFF'
 opts.plot = 'ON'; % Other option: 'OFF'
 opts.priors = 'MIN'; % Other options: 'ON', 'OFF', 'NOZP'
 opts.nnlo = 'OFF'; % Other options: 'BAER', 'ON'
-opts.wipe = 'ON'; % Other options: 'OFF'
+opts.wipe = 'ON'; % Other option: 'OFF'
+opts.write = 'OFF'; % Other option: 'ON'
 opts.nboot = 10; % Number of samples -- low default for quick checks
 opts.fit_cnt = 1; % For use in disambiguating results.

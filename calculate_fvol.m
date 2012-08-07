@@ -1,10 +1,13 @@
 function data = calculate_fvol(data)
     global opts;
     
-    if data.meta.is_dummy
-        return
+    if all(isinf(data.L))
+        data.fvol_fps  = ones(size(data.mu));
+        data.fvol_mps2 = ones(size(data.mu));
+        data.fvol_mps2_n = data.fvol_mps2;
+        return 
     end
-    
+        
     lbar1 = repmat(data.lbar1_c, [1, 100]);
     lbar2 = repmat(data.lbar2_c, [1, 100]);
     lbar3 = repmat(data.lbar3_c, [1, 100]);

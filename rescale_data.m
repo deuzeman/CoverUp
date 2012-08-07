@@ -1,12 +1,9 @@
 function data = rescale_data(data)
-    if data.meta.is_dummy
-        data.afac = ones(size(data.mu));
-        data.zfac = ones(size(data.mu));
+    if data.scale.a < eps
         return
     end
 
     data = get_facs(data);
-    data.scale.a2 = data.afac.^2 .* data.scale.a.^2;
 
     data.mps = data.mps ./ data.afac;
     data.sd_mps = data.sd_mps ./ data.afac;
