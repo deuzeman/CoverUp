@@ -1,15 +1,16 @@
 function data = rescale_data(data)
-    if data.scale.a < eps
-        return
-    end
-
     data = get_facs(data);
 
+    data.mu = data.mu ./ (data.afac .* data.zfac);
+    
+    if ~isfield('mps', 'data')
+        return
+    end
     data.mps = data.mps ./ data.afac;
     data.sd_mps = data.sd_mps ./ data.afac;
     data.fps = data.fps ./ data.afac;
     data.sd_fps = data.sd_fps ./ data.afac;
-    data.mu = data.mu ./ (data.afac .* data.zfac);
+
     data.L = data.L .* data.afac;
 
     data.mps_n = data.mps_n ./ data.afac;

@@ -4,7 +4,7 @@ function data = calculate_asq(data)
     data.asq_fps    = zeros(size(data.mu));
     data.asq_mps2_n = zeros(size(data.mu));
     
-    if (all(data.scale.a == 0))
+    if data.meta.clean
         return;
     end
 

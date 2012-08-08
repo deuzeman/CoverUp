@@ -7,7 +7,7 @@ function data = prepare_data(raw)
     data.meta.betas = unique(raw.beta);
     data.meta.num_betas = length(data.meta.betas);
     
-    data.meta.is_dummy = 0;
+    data.meta.clean = 0;
     data.meta.has_asq = strcmpi(opts.asq, 'ON');
     data.meta.has_iso = strcmpi(opts.iso, 'ON');
     data.meta.has_nnlo = strcmpi(opts.nnlo, 'ON');

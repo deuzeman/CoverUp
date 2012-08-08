@@ -1,10 +1,11 @@
 function data = calculate_fvol(data)
     global opts;
     
-    if all(isinf(data.L))
-        data.fvol_fps  = ones(size(data.mu));
-        data.fvol_mps2 = ones(size(data.mu));
-        data.fvol_mps2_n = data.fvol_mps2;
+    data.fvol_fps  = ones(size(data.mu));
+    data.fvol_mps2 = ones(size(data.mu));
+    data.fvol_mps2_n = data.fvol_mps2;
+    
+    if data.meta.clean
         return 
     end
         
@@ -20,9 +21,7 @@ function data = calculate_fvol(data)
 
     switch upper(opts.fvol)
         case 'OFF'
-            data.fvol_fps  = ones(size(data.mps));
-            data.fvol_mps2 = ones(size(data.mps));
-            data.fvol_mps2_n = data.fvol_mps2;
+            return;
         case 'GL'
             data.fvol_fps  = 1 ./ (1 + 2 * data.xi_c .* delta1(lambda_c));
             data.fvol_mps2 = 1 ./ (1 - data.xi_c .* delta1(lambda_c));

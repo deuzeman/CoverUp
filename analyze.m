@@ -8,7 +8,7 @@ function data = analyze(data)
     data = prepare_data(data);
 
     hw = waitbar(0, 'Running calculation...');
-    data = fitpions(data);
+    data = fit_pions(data);
     if (sum(~isnan(data.mn)) > 5)
         data = fit_nucleons(data);
     end
@@ -25,7 +25,7 @@ function data = analyze(data)
         samp.raw.a_fps = samp.raw.a_fps + data.raw.sd_a_fps .* noise_fps;
         samp.raw.a_mps = samp.raw.a_mps + data.raw.sd_a_mps .* noise_mps;
         samp.raw.a_mps_n = samp.raw.a_mps_n + data.raw.sd_a_mps .* noise_mps_n;
-        samp = fitpions(samp);
+        samp = fit_pions(samp);
         boot_params(:, ctr) = s2v(samp.params);
         boot_scale(:, ctr)  = s2v(samp.scale);
         waitbar((ctr + 1) / (1 + opts.nboot), hw, 'Running bootstraps...');

@@ -6,9 +6,7 @@ function data = display_results(data)
 
     % Calculate clean reference data (a = 0, L = infinite)
     clean_data = data;
-    clean_data.scale.a = 0;
-    clean_data.afac = 0;
-    clean_data.L = Inf;
+    clean_data.meta.clean = 1;
     clean_data = calculate_predictions(clean_data);   
     
     [~, data] = chi(data.params, data);
@@ -17,12 +15,9 @@ function data = display_results(data)
     mu_max = ceil(5.0 * max(data.mu)) / 5.0;
     plot_data.mu = eps : mu_max / 250 : mu_max;
     plot_data.meta = data.meta;
+    plot_data.meta.clean = 1;
     plot_data.params = data.params;
     
-    plot_data.scale.a = 0;
-    plot_data.afac = 0;
-    plot_data.L = Inf;
-  
     plot_data = calculate_predictions(plot_data);
 
     plot_data.inf_mps = sqrt(plot_data.inf_mps2);
@@ -30,8 +25,8 @@ function data = display_results(data)
         
     % Calculate deviations
     data.fps_corr = clean_data.inf_fps + data.dev.fps;
-    data.mps_corr = sqrt(clean_data.inf_mps2 + data.dev.mps2);
-    data.mps_n_corr = sqrt(clean_data.inf_mps2_n + data.dev.mps2_n);
+    data.mps_corr = clean_data.inf_mps + data.dev.mps;
+    data.mps_n_corr = clean_data.inf_mps_n + data.dev.mps_n;
     
     figure('Name', sprintf('Fit %d: Pion decay constant', opts.fit_cnt), 'NumberTitle','off');
     hold on;
@@ -119,10 +114,10 @@ function data = display_results(data)
     end
     fprintf('=========================================================\n');
     fprintf('  Fit quality details\n');
-    fprintf('    From pion mass    : %7.2f\n', sum((data.chi.mps2).^2));
+    fprintf('    From pion mass    : %7.2f\n', sum((data.chi.mps).^2));
     fprintf('    From pion decay   : %7.2f\n', sum((data.chi.fps).^2));
     if data.meta.has_iso
-        fprintf('    From neutral pion : %7.2f\n', sum((data.chi.mps2_n).^2));
+        fprintf('    From neutral pion : %7.2f\n', sum((data.chi.mps_n).^2));
     end
     if ~strcmpi(opts.priors, 'OFF')
         fprintf('    From non-pion     : %7.2f\n', sum((data.chi.priors).^2));

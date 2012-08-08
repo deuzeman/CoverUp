@@ -1,5 +1,5 @@
-function data =  fitpions(data)
-    % Using these estimated scales, set up a manual iteration
+function data =  fit_pions(data)
+    % Using the estimated scales, set up a manual iteration
     for sc_iter = 1 : 20
         % Merge in the scale
         data = multiply_a(data);
