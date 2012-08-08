@@ -5,8 +5,8 @@ function [result, data] = chi(params, data)
     data = calculate_predictions(data);
 
     % Calculate the deviation in the pion mass and decay constant
-    data.dev.mps = data.mps - sqrt((data.inf_mps2 + data.asq_mps2) .* data.fvol_mps2);
-    data.dev.fps = data.fps - (data.inf_fps  + data.asq_fps)  .* data.fvol_fps;
+    data.dev.mps   = data.mps   - sqrt((data.inf_mps2   + data.asq_mps2)   .* data.fvol_mps2);
+    data.dev.fps   = data.fps   -      (data.inf_fps    + data.asq_fps)    .* data.fvol_fps;
     data.dev.mps_n = data.mps_n - sqrt((data.inf_mps2_n + data.asq_mps2_n) .* data.fvol_mps2_n);
     
     data.chi.mps = data.dev.mps ./ data.sd_mps;

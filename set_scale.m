@@ -15,7 +15,6 @@ function data = set_scale(data)
   
   res_fac = td.inf_fps / almanac.fpi;
   data.scale.a = res_fac * data.scale.a;
-  disp(data.scale.a);
   data.scale.mu = td.mu / res_fac;
   data = fit_zp(data);
 
