@@ -8,10 +8,8 @@ function data = set_scale(data)
   td.mu = fzero(phys_diff, [eps, mu_max]);
   
   td.meta = data.meta;
+  td.meta.is_dummy = 1;
   td.params = data.params;
-  td.L = Inf;
-  td.scale.a = 0;
-  td.afac = 0;
   td = calculate_predictions(td);
   
   res_fac = td.inf_fps / almanac.fpi;
@@ -43,23 +41,19 @@ end
 function fn_res = fn_phys_rat(data, mu)
   td.mu = mu;
   td.meta = data.meta;
-  td.scale.a = 0;
-  td.afac = 0;
-  td.L = Inf;
+  td.meta.is_dummy = 1;
   td.params = data.params;
   td = calculate_predictions(td);
-  fn_res = sqrt(td.inf_mps2)/ td.inf_fps;
+  fn_res = td.inf_mps / td.inf_fps;
 end
 
 function mps_n = calc_mps_n(data, mu)
   td.mu = mu;
   td.meta = data.meta;
-  td.scale.a = 0;
-  td.afac = 0;
-  td.L = Inf;
+  td.meta.is_dummy = 1;
   td.params = data.params;
   td = calculate_predictions(td);
-  mps_n = sqrt(td.inf_mps2_n);
+  mps_n = td.inf_mps_n;
 end
 
 function data = fit_zp(data)

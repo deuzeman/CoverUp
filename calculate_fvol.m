@@ -1,7 +1,7 @@
 function data = calculate_fvol(data)
     global opts;
     
-    if all(isinf(data.L))
+    if data.meta.is_dummy
         data.fvol_fps  = ones(size(data.mu));
         data.fvol_mps2 = ones(size(data.mu));
         data.fvol_mps2_n = data.fvol_mps2;
