@@ -7,14 +7,16 @@ function data = calculate_fvol(data)
         data.fvol_mps2_n = data.fvol_mps2;
         return 
     end
-        
-    lbar1 = repmat(data.lbar1_c, [1, 100]);
-    lbar2 = repmat(data.lbar2_c, [1, 100]);
+    
+    if data.meta.has_l12
+        lbar1 = repmat(data.lbar1_c, [1, 100]);
+        lbar2 = repmat(data.lbar2_c, [1, 100]);
+    end
     lbar3 = repmat(data.lbar3_c, [1, 100]);
     lbar4 = repmat(data.lbar4_c, [1, 100]);
 
     mat_xi       = 2 * repmat(data.xi_c, 1, 100); % CDH convention for f0!
-    lambda_c     = sqrt(data.chimu_c) .* data.L;
+    lambda_c     = data.inf_mps .* data.L;
     sqn_lambda_c = lambda_c * sqrt(1:100); % NOTE Replaced by full pion mass, not LO! Probably wrong for GL correction scheme.
     prefactor    = repmat(multiplicity(1:100)', [length(data.mu), 1]) ./ sqn_lambda_c;
 
@@ -24,9 +26,13 @@ function data = calculate_fvol(data)
             data.fvol_mps2 = ones(size(data.mps));
             data.fvol_mps2_n = data.fvol_mps2;
         case 'GL'
-            data.fvol_fps  = 1 ./ (1 + 2 * data.xi_c .* delta1(lambda_c));
-            data.fvol_mps2 = 1 ./ (1 - data.xi_c .* delta1(lambda_c));
-            data.fvol_mps2_n = data.fvol_mps2;
+            if data.has_iso
+                error('Gasser-Leutwyler finite volume corrections not yet implemented with isospin breaking artefacts.');
+            else
+                data.fvol_fps  = 1 ./ (1 + 2 * data.xi_c .* delta1(sqn_lambda_c));
+                data.fvol_mps2 = 1 ./ (1 - data.xi_c .* delta1(sqn_lambda_c));
+                data.fvol_mps2_n = data.fvol_mps2;
+            end
         case 'BMW'
             mpl = data.mps .* data.L;
             data.fvol_fps  =  1 - 11.31937 * exp(-mpl) .* mpl.^(-1.5);
@@ -45,7 +51,7 @@ function data = calculate_fvol(data)
             data.fvol_mps2 = (1 - sum(0.5 * prefactor .* (mat_xi .* I_mps_2 + mat_xi.^2 .* I_mps_4), 2)).^2;
             data.fvol_mps2_n = data.fvol_mps2;
         case 'CWW'
-            r = repmat(sqrt(data.chimu_n ./ data.chimu_c), 1, 100);
+            r = repmat(data.inf_mps_n ./ data.inf_mps, 1, 100);
 
             sqn_lambda_n = sqn_lambda_c ./ r;
 
@@ -131,8 +137,8 @@ function res = dRcww(k, sqn_lambda, r)
         r = ones(size(sqn_lambda));
     end
     vec_sqn_lambda = reshape(sqn_lambda, [numel(sqn_lambda), 1]);
-    vec_r = reshape(r, [numel(sqn_lambda), 1]);
-    fun = @(y)dintv(k, vec_sqn_lambda, vec_r, y);
+    inv_vec_r = 1 ./ reshape(r, [numel(sqn_lambda), 1]);
+    fun = @(y)dintv(k, vec_sqn_lambda, inv_vec_r, y);
     if mod(k, 2)
         res = reshape(imag(quadv(fun, -50, 50)), size(sqn_lambda));
     else
@@ -145,8 +151,8 @@ function res = Rcww(k, sqn_lambda, r)
         r = ones(size(sqn_lambda));
     end
     vec_sqn_lambda = reshape(sqn_lambda, [numel(sqn_lambda), 1]);
-    vec_r = reshape(r, [numel(sqn_lambda), 1]);
-    fun = @(y)intv(k, vec_sqn_lambda, vec_r, y);
+    inv_vec_r = 1 ./ reshape(r, [numel(sqn_lambda), 1]);
+    fun = @(y)intv(k, vec_sqn_lambda, inv_vec_r, y);
     if mod(k, 2)
         res = reshape(imag(quadv(fun, -50, 50)), size(sqn_lambda));
     else
@@ -169,20 +175,20 @@ function res = Rpvci(sqn_lambda, r)
     res = pi * exp(-sqn_lambda .* sqrt(1 - w.^2)) - 0.25 * res;
 end
 
-function res = intv(k, vec_sqn_lambda, vec_r, y)
-    res = y.^k .* exp(-sqrt(1 + (y ./ vec_r).^2) .* vec_sqn_lambda) .* g(2 + 2i * y);
+function res = intv(k, vec_sqn_lambda, inv_vec_r, y)
+    res = y.^k .* exp(-sqrt(1 + (y .* inv_vec_r).^2) .* vec_sqn_lambda) .* g(2 + 2i * y);
 end
 
-function res = dintv(k, vec_sqn_lambda, vec_r, y)
-    res = y.^k .* exp(-sqrt(1 + (y ./ vec_r).^2) .* vec_sqn_lambda) .* dg(2 + 2i * y);
+function res = dintv(k, vec_sqn_lambda, inv_vec_r, y)
+    res = y.^k .* exp(-sqrt(1 + (y .* inv_vec_r).^2) .* vec_sqn_lambda) .* dg(2 + 2i * y);
 end
 
 function res = g(x)
-    res = 2 + sqrt((x - 4) ./ x) .* log(1 + 0.5 * sqrt(x - 4) .* sqrt(x) - 0.5 * x);
+    res = 2 + sqrt((x - 4) ./ x) .* log(1 + 0.5 * sqrt((x - 4) .* x) - 0.5 * x);
 end
 
 function res = dg(x)
-    res = 4 - x + 2 * sqrt((x - 4) ./ x) .* log(1 + 0.5 * sqrt(x - 4) .* sqrt(x) - 0.5 * x);
+    res = 4 - x + 2 * sqrt((x - 4) ./ x) .* log(1 + 0.5 * sqrt((x - 4) .* x) - 0.5 * x);
     res = res ./ ((x - 4) .* x);
 end
 

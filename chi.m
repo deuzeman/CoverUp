@@ -26,10 +26,8 @@ end
 function data = priors_chisq(data)
     global almanac;
     global opts;
-       
-    has_l12 = strcmpi(opts.fvol, 'CDH') || strcmpi(opts.fvol, 'CWW');
-    
-    num_priors = 2 * (data.meta.num_betas - 1) + 2 * has_l12 + 2 * strcmpi(opts.priors, 'ON');
+        
+    num_priors = 2 * (data.meta.num_betas - 1) + 2 * data.meta.has_l12 + 2 * strcmpi(opts.priors, 'ON');
 
     data.chi.priors = zeros(num_priors, 1);
     
@@ -42,7 +40,7 @@ function data = priors_chisq(data)
         idx = idx + 2;
     end
     
-    if has_l12
+    if data.meta.has_l12
         data.chi.priors(idx)     = (data.params.l1 - almanac.l1.ave) / almanac.l1.std;
         data.chi.priors(idx + 1) = (data.params.l2 - almanac.l2.ave) / almanac.l2.std;
         idx = idx + 2;

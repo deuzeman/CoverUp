@@ -92,49 +92,51 @@ function data = display_results(data)
     fprintf('=========================================================\n');
     fprintf('  Results\n');
     for ctr = 1 : data.meta.num_betas - 1
-        fprintf('    a_{%4.2f}          : %7.4f +/- %7.4f fm\n', data.meta.betas(ctr), data.scale.a * almanac.mev_fm * data.params.(data.meta.fn_afac{ctr}), ...
+        fprintf('    a_{%4.2f}           : %7.4f +/- %7.4f fm\n', data.meta.betas(ctr), data.scale.a * almanac.mev_fm * data.params.(data.meta.fn_afac{ctr}), ...
                                                                                        data.sd_scale.a * almanac.mev_fm * data.params.(data.meta.fn_afac{ctr}));
     end
-    fprintf('    a_{%4.2f}          : %7.4f +/- %7.4f fm\n', data.meta.betas(end), data.scale.a * almanac.mev_fm, data.sd_scale.a * almanac.mev_fm);
-    fprintf('    f_0               : %7.3f +/- %7.3f MeV\n', data.params.f0, data.sd_params.f0);
-    fprintf('    f_pi / f_0        : %7.3f +/- %7.3f\n\n', almanac.fpi / data.params.f0, almanac.fpi * data.sd_params.f0 / data.params.f0^2);
-    fprintf('    B_0               : %7.2f +/- %7.2f MeV\n', data.params.B0, data.sd_params.B0);
-    fprintf('    \\mu / Z_p         : %7.3f +/- %7.3f MeV\n', data.scale.mu, data.sd_scale.mu);
-    fprintf('    2 B_0 mu / m_pi^2 : %7.3f +/- %7.3f\n\n', 2 * data.params.B0 * data.scale.mu / almanac.mpi^2, 2 * data.sd_params.B0 * data.scale.mu / almanac.mpi^2);
-    fprintf('    \\bar{l}_1         : %7.3f +/- %7.3f\n', data.params.l1, data.sd_params.l1);
-    fprintf('    \\bar{l}_2         : %7.3f +/- %7.3f\n', data.params.l2, data.sd_params.l2);
-    fprintf('    \\bar{l}_3         : %7.3f +/- %7.3f\n', data.params.l3, data.sd_params.l3);
-    fprintf('    \\bar{l}_4         : %7.3f +/- %7.3f\n\n', data.params.l4, data.sd_params.l4);
+    fprintf('    a_{%4.2f}           : %7.4f +/- %7.4f fm\n', data.meta.betas(end), data.scale.a * almanac.mev_fm, data.sd_scale.a * almanac.mev_fm);
+    fprintf('    f_0                : %7.3f +/- %7.3f MeV\n', data.params.f0, data.sd_params.f0);
+    fprintf('    f_pi / f_0         : %7.3f +/- %7.3f\n\n', almanac.fpi / data.params.f0, almanac.fpi * data.sd_params.f0 / data.params.f0^2);
+    fprintf('    B_0                : %7.2f +/- %7.2f MeV\n', data.params.B0, data.sd_params.B0);
+    fprintf('    \\mu / Z_p          : %7.3f +/- %7.3f MeV\n', data.scale.mu, data.sd_scale.mu);
+    fprintf('    2 B_0 \\mu / m_pi^2 : %7.3f +/- %7.3f\n\n', 2 * data.params.B0 * data.scale.mu / almanac.mpi^2, 2 * data.sd_params.B0 * data.scale.mu / almanac.mpi^2);
+    if data.meta.has_l12
+        fprintf('    \\bar{l}_1          : %7.3f +/- %7.3f\n', data.params.l1, data.sd_params.l1);
+        fprintf('    \\bar{l}_2          : %7.3f +/- %7.3f\n', data.params.l2, data.sd_params.l2);
+    end
+    fprintf('    \\bar{l}_3          : %7.3f +/- %7.3f\n', data.params.l3, data.sd_params.l3);
+    fprintf('    \\bar{l}_4          : %7.3f +/- %7.3f\n\n', data.params.l4, data.sd_params.l4);
     if data.meta.has_asq
         fprintf('    D_m                : %7.3f +/- %7.3f fm^{-2}\n', data.params.Dm / (data.scale.a * almanac.mev_fm)^2, data.sd_params.Dm / (data.scale.a * almanac.mev_fm)^2);
         fprintf('    D_f                : %7.3f +/- %7.3f fm^{-2}\n', data.params.Df / (data.scale.a * almanac.mev_fm)^2, data.sd_params.Df / (data.scale.a * almanac.mev_fm)^2);
         if data.meta.needs_Dn
-            fprintf('    D_n               : %7.3f +/- %7.3f fm^{-2}\n', data.params.Dn / (data.scale.a * almanac.mev_fm)^2, data.sd_params.Dn / (data.scale.a * almanac.mev_fm)^2);
+            fprintf('    D_n                : %7.3f +/- %7.3f fm^{-2}\n', data.params.Dn / (data.scale.a * almanac.mev_fm)^2, data.sd_params.Dn / (data.scale.a * almanac.mev_fm)^2);
         end
     end
 
     if data.meta.needs_zeta
-        fprintf('    \\zeta             : %7.3f +/- %7.3f GeV^2 fm^{-2}\n', data.params.zeta / (1000 * data.scale.a * almanac.mev_fm)^2, data.sd_params.zeta / (1000 * data.scale.a * almanac.mev_fm)^2);
+        fprintf('    \\zeta              : %7.3f +/- %7.3f GeV^2 fm^{-2}\n', data.params.zeta / (1000 * data.scale.a * almanac.mev_fm)^2, data.sd_params.zeta / (1000 * data.scale.a * almanac.mev_fm)^2);
     end
     if data.meta.has_iso
-        fprintf('    \\Xi_3             : %7.3f +/- %7.3f\n', data.params.Xi3, data.sd_params.Xi3);
+        fprintf('    \\Xi_3              : %7.3f +/- %7.3f\n', data.params.Xi3, data.sd_params.Xi3);
     end
     fprintf('=========================================================\n');
     fprintf('  Fit quality details\n');
-    fprintf('    From pion mass    : %7.2f\n', sum((data.chi.mps).^2));
-    fprintf('    From pion decay   : %7.2f\n', sum((data.chi.fps).^2));
+    fprintf('    From pion mass     : %7.2f\n', sum((data.chi.mps).^2));
+    fprintf('    From pion decay    : %7.2f\n', sum((data.chi.fps).^2));
     if data.meta.has_iso
-        fprintf('    From neutral pion : %7.2f\n', sum((data.chi.mps_n).^2));
+        fprintf('    From neutral pion  : %7.2f\n', sum((data.chi.mps_n).^2));
     end
     if ~strcmpi(opts.priors, 'OFF')
-        fprintf('    From non-pion     : %7.2f\n', sum((data.chi.priors).^2));
+        fprintf('    From non-pion      : %7.2f\n', sum((data.chi.priors).^2));
     end
     
     chisq   = sum(s2v(data.chi).^2);
     dof_chi = length(s2v(data.chi)); 
     dof_par = 6 + data.meta.has_asq * 2 + data.meta.needs_Dn + data.meta.needs_zeta + data.meta.has_iso;
     fprintf('    ---------------------------\n');
-    fprintf('    Chi squared / dof : %7.2f / (%d - %d) = %7.2f\n', chisq, dof_chi, dof_par, chisq / (dof_chi - dof_par));
+    fprintf('    Chi squared / dof  : %7.2f / (%d - %d) = %7.2f\n', chisq, dof_chi, dof_par, chisq / (dof_chi - dof_par));
     fprintf('=========================================================\n');
     % Prepare data for writeout
     if strcmpi(opts.write, 'ON')

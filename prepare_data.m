@@ -13,6 +13,7 @@ function data = prepare_data(raw)
     data.meta.has_nnlo = strcmpi(opts.nnlo, 'ON');
     data.meta.needs_Dn = data.meta.has_asq && data.meta.has_iso;
     data.meta.needs_zeta = data.meta.has_iso || strcmpi(opts.fvol, 'CWW');
+    data.meta.has_l12 = strcmpi(opts.fvol, 'CDH') || strcmpi(opts.fvol, 'CWW');
     data.meta.mps_n_mask = ~isnan(raw.a_mps_n);
     
     data.meta.indices = cell(size(data.meta.betas));
@@ -70,12 +71,6 @@ function data = prepare_data(raw)
         return
     end
     
-    for idx = 1 : data.meta.num_betas - 1
-        % Note that the lattice spacings are given in fm,
-        % so one needs to invert them for MeV.
-        data.params.(data.meta.fn_afac{idx}) = data.meta.r0(end) / data.meta.r0(idx);
-        data.params.(data.meta.fn_zfac{idx}) = data.meta.zfac(idx);
-    end
     
     data.meta.fn_zfac = cell(data.meta.num_betas - 1, 1);
     data.meta.fn_afac = cell(data.meta.num_betas - 1, 1);
@@ -83,6 +78,7 @@ function data = prepare_data(raw)
     data.meta.sd_zfac = zeros(data.meta.num_betas - 1, 1);
     data.meta.afac = ones(data.meta.num_betas - 1, 1);
     data.meta.sd_afac = zeros(data.meta.num_betas - 1, 1);
+
     
     for idx = 1 : data.meta.num_betas - 1
         data.meta.fn_zfac{idx} = sprintf('z_%u_over_%u', 1000 * data.meta.betas(end), 1000 * data.meta.betas(idx));
@@ -93,5 +89,12 @@ function data = prepare_data(raw)
         data.meta.afac(idx) = data.meta.r0(end) / data.meta.r0(idx);
         data.meta.sd_afac(idx) = data.meta.afac(idx) * ...
             sqrt((data.meta.sd_r0(idx) / data.meta.r0(idx))^2 + (data.meta.sd_r0(end) / data.meta.r0(end))^2);
+    end
+    
+    for idx = 1 : data.meta.num_betas - 1
+        % Note that the lattice spacings are given in fm,
+        % so one needs to invert them for MeV.
+        data.params.(data.meta.fn_afac{idx}) = data.meta.r0(end) / data.meta.r0(idx);
+        data.params.(data.meta.fn_zfac{idx}) = data.meta.zfac(idx);
     end
 end
