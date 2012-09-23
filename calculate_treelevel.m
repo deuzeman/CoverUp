@@ -9,7 +9,7 @@ function data = calculate_treelevel(data)
     end
    
     if data.meta.needs_zeta
-        data.chimu_n = data.chimu_n - data.params.zeta .* data.afac.^2;
+        data.chimu_n = data.chimu_n + 2.0 * data.params.zeta .* data.afac.^2;
     end
 
     data.xi_n = data.chimu_n ./ (16 * pi^2 * data.params.f0.^2);

@@ -6,11 +6,29 @@ function [result, data] = chi(params, data)
 
     % Calculate the deviation in the pion mass and decay constant
     data.dev.mps =   data.mps - sqrt((data.inf_mps2 + data.asq_mps2) .* data.fvol_mps2);
-    data.dev.fps =   data.fps - (data.inf_fps  + data.asq_fps)  .* data.fvol_fps;
+    data.dev.fps =   data.fps - (data.inf_fps  + data.asq_fps)  .* data.fvol_fps;   
     data.dev.mps_n = data.mps_n - sqrt((data.inf_mps2_n + data.asq_mps2_n) .* data.fvol_mps2_n);
     
-    data.chi.mps = data.dev.mps ./ data.sd_mps;
-    data.chi.fps = data.dev.fps ./ data.sd_fps;
+    cov_mat = zeros(length(data.sd_mps) + length(data.sd_fps));
+    for ctr = 1 : length(data.sd_mps)
+        cov_mat(2 * ctr - 1, 2 * ctr - 1) = data.sd_mps(ctr)^2;
+        cov_mat(2 * ctr    , 2 * ctr    ) = data.sd_fps(ctr)^2;
+        if data.meta.use_corr
+            cov_mat(2 * ctr - 1, 2 * ctr    ) = data.raw.corr(ctr) * data.sd_mps(ctr) * data.sd_fps(ctr);
+            cov_mat(2 * ctr    , 2 * ctr - 1) = data.raw.corr(ctr) * data.sd_fps(ctr) * data.sd_mps(ctr);
+        end
+    end
+    [cma, cmb, cmc] = svd(cov_mat);
+    weight = cma * diag(1 ./ sqrt(diag(cmb))) * cmc';
+        
+    chi_tot = [data.dev.mps, data.dev.fps]';
+    chi_tot = reshape(chi_tot, numel(chi_tot), 1);
+    chi_tot = weight * chi_tot;
+    chi_tot = reshape(chi_tot, 2, numel(chi_tot) / 2)';
+    
+    data.chi.mps = chi_tot(:, 1);
+    data.chi.fps = chi_tot(:, 2);
+
     if data.meta.has_iso
         data.chi.mps_n = data.dev.mps_n ./ data.sd_mps_n;
         data.chi.mps_n(isnan(data.chi.mps_n)) = [];
@@ -27,17 +45,20 @@ function data = priors_chisq(data)
     global almanac;
     global opts;
         
-    num_priors = 2 * (data.meta.num_betas - 1) + 2 * data.meta.has_l12 + 2 * strcmpi(opts.priors, 'ON');
+    num_priors = (data.meta.num_betas - 1) + 2 * data.meta.has_l12 + (data.meta.num_betas - 1) * ~(strcmpi(opts.priors, 'NOZP') || strcmpi(opts.priors, 'NOR0')) + 2 * strcmpi(opts.priors, 'ON');
 
     data.chi.priors = zeros(num_priors, 1);
     
     idx = 1;
     for beta_ctr = 1 : data.meta.num_betas - 1
         if ~strcmpi(opts.priors, 'NOZP')
-            data.chi.priors(idx) = (data.params.(data.meta.fn_zfac{ceil(idx / 2)}) - data.meta.zfac(ceil(idx / 2))) / data.meta.sd_zfac(ceil(idx / 2)); 
+            data.chi.priors(idx) = (data.params.(data.meta.fn_zfac{beta_ctr}) - data.meta.zfac(beta_ctr)) / data.meta.sd_zfac(beta_ctr); 
+            idx = idx + 1;
         end
-        data.chi.priors(idx + 1) = (data.params.(data.meta.fn_afac{ceil(idx / 2)}) - data.meta.afac(ceil(idx / 2))) / data.meta.sd_afac(ceil(idx / 2)); 
-        idx = idx + 2;
+        if ~strcmpi(opts.priors, 'NOR0')
+            data.chi.priors(idx) = (data.params.(data.meta.fn_afac{beta_ctr}) - data.meta.afac(beta_ctr)) / data.meta.sd_afac(beta_ctr); 
+            idx = idx + 1;
+        end
     end
     
     if data.meta.has_l12

@@ -87,6 +87,7 @@ function data = display_results(data)
     fprintf('    Isospin splitting effects turned %s.\n', opts.iso);
     fprintf('    Prior inclusion set to %s.\n', opts.priors);
     fprintf('    NNLO terms set to %s.\n', opts.nnlo);
+    fprintf('    Correlated chi squared analysis is %s.\n', opts.corr);
     fprintf('    Run with %d bootstrap samples.\n', opts.nboot);
     fprintf('    Data writeout is turned %s.\n', opts.write);
     fprintf('=========================================================\n');
@@ -119,7 +120,35 @@ function data = display_results(data)
         fprintf('    \\zeta              : %7.3f +/- %7.3f GeV^2 fm^{-2}\n', data.params.zeta / (1000 * data.scale.a * almanac.mev_fm)^2, data.sd_params.zeta / (1000 * data.scale.a * almanac.mev_fm)^2);
     end
     if data.meta.has_iso
-        fprintf('    \\Xi_3              : %7.3f +/- %7.3f\n', data.params.Xi3, data.sd_params.Xi3);
+        fprintf('    \\bar{xi}_3         : %7.3f +/- %7.3f\n', data.params.Xi3, data.sd_params.Xi3);
+    end
+    fprintf('=========================================================\n');
+    fprintf('  Results in ETMC convention\n');
+    for ctr = 1 : data.meta.num_betas - 1
+        fprintf('    f_0 a_{%4.2f}       : %7.4f +/- %7.4f\n', data.meta.betas(ctr), data.scale_etmc.a * data.params.(data.meta.fn_afac{ctr}), ...
+                                                                                       data.sd_scale_etmc.a * data.params.(data.meta.fn_afac{ctr}));
+    end
+    fprintf('    f_0 a_{%4.2f}       : %7.4f +/- %7.4f\n', data.meta.betas(end), data.scale_etmc.a, data.sd_scale.a);
+    fprintf('    B_0 / f_0          : %7.2f +/- %7.2f\n', data.params_etmc.B0, data.sd_params_etmc.B0);
+    if data.meta.has_l12
+        fprintf('    \\Lambda_1 / f_0    : %7.3f +/- %7.3f\n', data.params_etmc.l1, data.sd_params_etmc.l1);
+        fprintf('    \\Lambda_2 / f_0    : %7.3f +/- %7.3f\n', data.params_etmc.l2, data.sd_params_etmc.l2);
+    end
+    fprintf('    \\Lambda_3 / f_0    : %7.3f +/- %7.3f\n', data.params_etmc.l3, data.sd_params_etmc.l3);
+    fprintf('    \\Lambda_4 / f_0    : %7.3f +/- %7.3f\n', data.params_etmc.l4, data.sd_params_etmc.l4);
+    if data.meta.has_asq
+        fprintf('    D_m / f_0^2        : %7.3f +/- %7.3f\n', data.params_etmc.Dm, data.sd_params_etmc.Dm);
+        fprintf('    D_f / f_0^2        : %7.3f +/- %7.3f\n', data.params_etmc.Df, data.sd_params_etmc.Df);
+        if data.meta.needs_Dn
+            fprintf('    D_n / f_0^2        : %7.3f +/- %7.3f\n', data.params_etmc.Dn, data.sd_params_etmc.Dn);
+        end
+    end
+
+    if data.meta.needs_zeta
+        fprintf('    \\zeta / f_0^4      : %7.3f +/- %7.3f\n', data.params_etmc.zeta, data.sd_params_etmc.zeta);
+    end
+    if data.meta.has_iso
+        fprintf('    \\Xi_3 / f_0        : %7.3f +/- %7.3f\n', data.params_etmc.Xi3, data.sd_params.Xi3);
     end
     fprintf('=========================================================\n');
     fprintf('  Fit quality details\n');
@@ -138,6 +167,7 @@ function data = display_results(data)
     fprintf('    ---------------------------\n');
     fprintf('    Chi squared / dof  : %7.2f / (%d - %d) = %7.2f\n', chisq, dof_chi, dof_par, chisq / (dof_chi - dof_par));
     fprintf('=========================================================\n');
+    
     % Prepare data for writeout
     if strcmpi(opts.write, 'ON')
         data_write = [data.raw.beta, data.mu, data.afac .* data.scale.a, data.L, ...

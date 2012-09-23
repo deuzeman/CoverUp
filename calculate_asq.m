@@ -13,7 +13,7 @@ function data = calculate_asq(data)
         data.asq_fps    = data.params.f0 .* data.params.Df .* data.afac.^2;
     end
     if data.meta.needs_Dn
-        data.asq_mps2_n = - data.params.zeta .* data.params.Dn .* data.afac.^4;
+        data.asq_mps2_n = data.params.zeta .* data.params.Dn .* data.afac.^4;
     end
 
 end

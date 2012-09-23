@@ -6,11 +6,12 @@ function data = prepare_data(raw)
     
     data.meta.betas = unique(raw.beta);
     data.meta.num_betas = length(data.meta.betas);
-    
+
     data.meta.is_dummy = 0;
     data.meta.has_asq = strcmpi(opts.asq, 'ON');
     data.meta.has_iso = strcmpi(opts.iso, 'ON');
     data.meta.has_nnlo = strcmpi(opts.nnlo, 'ON');
+    data.meta.use_corr = strcmpi(opts.corr, 'ON');
     data.meta.needs_Dn = data.meta.has_asq && data.meta.has_iso;
     data.meta.needs_zeta = data.meta.has_iso || strcmpi(opts.fvol, 'CWW');
     data.meta.has_l12 = strcmpi(opts.fvol, 'CDH') || strcmpi(opts.fvol, 'CWW');
@@ -32,7 +33,7 @@ function data = prepare_data(raw)
     
     data.scale.a = data.meta.a(end);
     data.scale.zp = data.meta.zp(end);
-       
+   
     % Plug in some reasonable starting values
     data.params.f0 = 120;
     data.params.B0 = almanac.mpi^2 / (2 * 3.0);

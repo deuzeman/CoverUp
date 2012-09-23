@@ -14,31 +14,30 @@ function data = calculate_fvol(data)
     end
     lbar3 = repmat(data.lbar3_c, [1, 100]);
     lbar4 = repmat(data.lbar4_c, [1, 100]);
-
-    mat_xi       = 2 * repmat(data.xi_c, 1, 100); % CDH convention for f0!
-    lambda_c     = data.inf_mps .* data.L;
-    sqn_lambda_c = lambda_c * sqrt(1:100); % NOTE Replaced by full pion mass, not LO! Probably wrong for GL correction scheme.
-    prefactor    = repmat(multiplicity(1:100)', [length(data.mu), 1]) ./ sqn_lambda_c;
-
+    
     switch upper(opts.fvol)
         case 'OFF'
             data.fvol_fps  = ones(size(data.mps));
             data.fvol_mps2 = ones(size(data.mps));
             data.fvol_mps2_n = data.fvol_mps2;
         case 'GL'
-            if data.has_iso
-                error('Gasser-Leutwyler finite volume corrections not yet implemented with isospin breaking artefacts.');
-            else
-                data.fvol_fps  = 1 ./ (1 + 2 * data.xi_c .* delta1(sqn_lambda_c));
-                data.fvol_mps2 = 1 ./ (1 - data.xi_c .* delta1(sqn_lambda_c));
-                data.fvol_mps2_n = data.fvol_mps2;
-            end
+            dlc = delta1((sqrt(data.chimu_c) .* data.L) * sqrt(1:100));
+            dln = delta1((sqrt(data.chimu_n) .* data.L) * sqrt(1:100));
+            
+            data.fvol_fps  = 1 ./ (1 + data.xi_c .* dlc + data.xi_n .* dln);
+            data.fvol_mps2 = 1 ./ (1 - data.xi_n .* dln);
+            data.fvol_mps2_n = 1 ./ (1 - 2 .* data.xi_c .* dlc + data.xi_n .* dln);
         case 'BMW'
             mpl = data.mps .* data.L;
             data.fvol_fps  =  1 - 11.31937 * exp(-mpl) .* mpl.^(-1.5);
             data.fvol_mps2 = (1 + 7.706548 * exp(-mpl) .* mpl.^(-1.5)).^2;
             data.fvol_mps2_n = data.fvol_mps2;
         case 'CDH'
+            mat_xi       = 2 * repmat(data.xi_c, 1, 100); % CDH convention for f0!
+            lambda_c     = data.inf_mps .* data.L;
+            sqn_lambda_c = lambda_c * sqrt(1:100); % NOTE Replaced by full pion mass, not LO! Probably wrong for GL correction scheme.
+            prefactor    = repmat(multiplicity(1:100)', [length(data.mu), 1]) ./ sqn_lambda_c;
+
             I_mps_2 = -2 * besselk(1, sqn_lambda_c);
             I_mps_4 = (1 / 9) * (101 - 39 * pi + 72 * lbar1 + 48 * lbar2 - 45 * lbar3 - 36 * lbar4) .* besselk(1, sqn_lambda_c) ...
                       + (1 / 18) * (-476 + 183 * pi - 96 * lbar1 - 384 * lbar2) .* (besselk(2, sqn_lambda_c) ./ (sqn_lambda_c));
@@ -51,9 +50,14 @@ function data = calculate_fvol(data)
             data.fvol_mps2 = (1 - sum(0.5 * prefactor .* (mat_xi .* I_mps_2 + mat_xi.^2 .* I_mps_4), 2)).^2;
             data.fvol_mps2_n = data.fvol_mps2;
         case 'CWW'
-            r = repmat(data.inf_mps_n ./ data.inf_mps, 1, 100);
+            mat_xi       = 2 * repmat(data.xi_c, 1, 100); % CDH convention for f0!
+            lambda_c     = data.inf_mps .* data.L;
+            sqn_lambda_c = lambda_c * sqrt(1:100); % NOTE Replaced by full pion mass, not LO! Probably wrong for GL correction scheme.
+            prefactor    = repmat(multiplicity(1:100)', [length(data.mu), 1]) ./ sqn_lambda_c;
+            prefactor_n    = repmat(multiplicity(1:100)', [length(data.mu), 1]) ./ sqn_lambda_n;
 
-            sqn_lambda_n = sqn_lambda_c ./ r;
+            r = repmat(data.inf_mps_n ./ data.inf_mps, 1, 100);
+            sqn_lambda_n = sqn_lambda_c ./ r;    
 
             Rcww_0 = Rcww(0, sqn_lambda_c);
             Rcww_1 = Rcww(1, sqn_lambda_c);
