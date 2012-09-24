@@ -92,11 +92,12 @@ function data = display_results(data)
     fprintf('    Data writeout is turned %s.\n', opts.write);
     fprintf('=========================================================\n');
     fprintf('  Results\n');
-    for ctr = 1 : data.meta.num_betas - 1
-        fprintf('    a_{%4.2f}           : %7.4f +/- %7.4f fm\n', data.meta.betas(ctr), data.scale.a * almanac.mev_fm * data.params.(data.meta.fn_afac{ctr}), ...
-                                                                                       data.sd_scale.a * almanac.mev_fm * data.params.(data.meta.fn_afac{ctr}));
+
+    for idx = 1 : data.meta.num_betas
+        fprintf('    a_{%4.2f}           : %7.4f +/- %7.4f fm\n', data.meta.betas(idx), data.scale.(data.meta.fn_a{idx}) * almanac.mev_fm, ...
+                                                                                        data.sd_scale.(data.meta.fn_a{idx}) * almanac.mev_fm);
     end
-    fprintf('    a_{%4.2f}           : %7.4f +/- %7.4f fm\n', data.meta.betas(end), data.scale.a * almanac.mev_fm, data.sd_scale.a * almanac.mev_fm);
+    
     fprintf('    f_0                : %7.3f +/- %7.3f MeV\n', data.params.f0, data.sd_params.f0);
     fprintf('    f_pi / f_0         : %7.3f +/- %7.3f\n\n', almanac.fpi / data.params.f0, almanac.fpi * data.sd_params.f0 / data.params.f0^2);
     fprintf('    B_0                : %7.2f +/- %7.2f MeV\n', data.params.B0, data.sd_params.B0);
@@ -124,11 +125,9 @@ function data = display_results(data)
     end
     fprintf('=========================================================\n');
     fprintf('  Results in ETMC convention\n');
-    for ctr = 1 : data.meta.num_betas - 1
-        fprintf('    f_0 a_{%4.2f}       : %9.4f +/- %7.4f\n', data.meta.betas(ctr), data.scale_etmc.a * data.params.(data.meta.fn_afac{ctr}), ...
-                                                                                       data.sd_scale_etmc.a * data.params.(data.meta.fn_afac{ctr}));
+    for ctr = 1 : data.meta.num_betas
+        fprintf('    f_0 a_{%4.2f}       : %9.4f +/- %7.4f\n', data.meta.betas(ctr), data.scale_etmc.(data.meta.fn_a{ctr}), data.sd_scale_etmc.(data.meta.fn_a{ctr}));
     end
-    fprintf('    f_0 a_{%4.2f}       : %9.4f +/- %7.4f\n', data.meta.betas(end), data.scale_etmc.a, data.sd_scale.a);
     fprintf('    B_0 / f_0          : %9.2f +/- %7.2f\n', data.params_etmc.B0, data.sd_params_etmc.B0);
     if data.meta.has_l12
         fprintf('    \\Lambda_1 / f_0    : %9.3f +/- %7.3f\n', data.params_etmc.l1, data.sd_params_etmc.l1);

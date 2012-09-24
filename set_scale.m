@@ -16,6 +16,10 @@ function data = set_scale(data)
   data.scale.a = res_fac * data.scale.a;
   data.scale.mu = td.mu / res_fac;
   data = fit_zp(data);
+  for idx = 1 : data.meta.num_betas - 1
+    data.scale.(data.meta.fn_a{idx}) = data.scale.a * data.params.(data.meta.fn_afac{idx});
+  end
+  data.scale.(data.meta.fn_a{data.meta.num_betas}) = data.scale.a;
 
   mps_n_pred = @(pmu)(calc_mps_n(data, pmu));
   if data.meta.has_iso && (mps_n_pred(eps) < 0)

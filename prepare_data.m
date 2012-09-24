@@ -72,7 +72,7 @@ function data = prepare_data(raw)
         return
     end
     
-    
+    data.meta.fn_a = cell(data.meta.num_betas, 1);
     data.meta.fn_zfac = cell(data.meta.num_betas - 1, 1);
     data.meta.fn_afac = cell(data.meta.num_betas - 1, 1);
     data.meta.zfac = ones(data.meta.num_betas - 1, 1);
@@ -80,6 +80,9 @@ function data = prepare_data(raw)
     data.meta.afac = ones(data.meta.num_betas - 1, 1);
     data.meta.sd_afac = zeros(data.meta.num_betas - 1, 1);
 
+    for idx = 1 : data.meta.num_betas
+        data.meta.fn_a{idx} = sprintf('a_%u', 1000 * data.meta.betas(idx));
+    end
     
     for idx = 1 : data.meta.num_betas - 1
         data.meta.fn_zfac{idx} = sprintf('z_%u_over_%u', 1000 * data.meta.betas(end), 1000 * data.meta.betas(idx));

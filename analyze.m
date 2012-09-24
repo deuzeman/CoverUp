@@ -93,6 +93,8 @@ function data = etmc_convention(data)
         data.params_etmc.km = data.params.km / data.params.f0^2;
         data.params_etmc.kf = data.params.kf / data.params.f0^2;
     end
-    
-    data.scale_etmc.a = data.scale.a * data.params.f0;
+
+    for idx = 1 : data.meta.num_betas
+        data.scale_etmc.(data.meta.fn_a{idx}) = data.scale.(data.meta.fn_a{idx}) * data.params.f0;
+    end
 end
