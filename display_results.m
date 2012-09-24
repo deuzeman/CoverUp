@@ -125,30 +125,30 @@ function data = display_results(data)
     fprintf('=========================================================\n');
     fprintf('  Results in ETMC convention\n');
     for ctr = 1 : data.meta.num_betas - 1
-        fprintf('    f_0 a_{%4.2f}       : %7.4f +/- %7.4f\n', data.meta.betas(ctr), data.scale_etmc.a * data.params.(data.meta.fn_afac{ctr}), ...
+        fprintf('    f_0 a_{%4.2f}       : %9.4f +/- %7.4f\n', data.meta.betas(ctr), data.scale_etmc.a * data.params.(data.meta.fn_afac{ctr}), ...
                                                                                        data.sd_scale_etmc.a * data.params.(data.meta.fn_afac{ctr}));
     end
-    fprintf('    f_0 a_{%4.2f}       : %7.4f +/- %7.4f\n', data.meta.betas(end), data.scale_etmc.a, data.sd_scale.a);
-    fprintf('    B_0 / f_0          : %7.2f +/- %7.2f\n', data.params_etmc.B0, data.sd_params_etmc.B0);
+    fprintf('    f_0 a_{%4.2f}       : %9.4f +/- %7.4f\n', data.meta.betas(end), data.scale_etmc.a, data.sd_scale.a);
+    fprintf('    B_0 / f_0          : %9.2f +/- %7.2f\n', data.params_etmc.B0, data.sd_params_etmc.B0);
     if data.meta.has_l12
-        fprintf('    \\Lambda_1 / f_0    : %7.3f +/- %7.3f\n', data.params_etmc.l1, data.sd_params_etmc.l1);
-        fprintf('    \\Lambda_2 / f_0    : %7.3f +/- %7.3f\n', data.params_etmc.l2, data.sd_params_etmc.l2);
+        fprintf('    \\Lambda_1 / f_0    : %9.3f +/- %7.3f\n', data.params_etmc.l1, data.sd_params_etmc.l1);
+        fprintf('    \\Lambda_2 / f_0    : %9.3f +/- %7.3f\n', data.params_etmc.l2, data.sd_params_etmc.l2);
     end
-    fprintf('    \\Lambda_3 / f_0    : %7.3f +/- %7.3f\n', data.params_etmc.l3, data.sd_params_etmc.l3);
-    fprintf('    \\Lambda_4 / f_0    : %7.3f +/- %7.3f\n', data.params_etmc.l4, data.sd_params_etmc.l4);
+    fprintf('    \\Lambda_3 / f_0    : %9.3f +/- %7.3f\n', data.params_etmc.l3, data.sd_params_etmc.l3);
+    fprintf('    \\Lambda_4 / f_0    : %9.3f +/- %7.3f\n', data.params_etmc.l4, data.sd_params_etmc.l4);
     if data.meta.has_asq
-        fprintf('    D_m / f_0^2        : %7.3f +/- %7.3f\n', data.params_etmc.Dm, data.sd_params_etmc.Dm);
-        fprintf('    D_f / f_0^2        : %7.3f +/- %7.3f\n', data.params_etmc.Df, data.sd_params_etmc.Df);
+        fprintf('    D_m / f_0^2        : %6.2e +/- %5.1e\n', data.params_etmc.Dm, data.sd_params_etmc.Dm);
+        fprintf('    D_f / f_0^2        : %6.2e +/- %5.1e\n', data.params_etmc.Df, data.sd_params_etmc.Df);
         if data.meta.needs_Dn
-            fprintf('    D_n / f_0^2        : %7.3f +/- %7.3f\n', data.params_etmc.Dn, data.sd_params_etmc.Dn);
+            fprintf('    D_n / f_0^2        : %6.2e +/- %5.1e\n', data.params_etmc.Dn, data.sd_params_etmc.Dn);
         end
     end
 
     if data.meta.needs_zeta
-        fprintf('    \\zeta / f_0^4      : %7.3f +/- %7.3f\n', data.params_etmc.zeta, data.sd_params_etmc.zeta);
+        fprintf('    \\zeta / f_0^4      : %6.2e +/- %5.1e\n', data.params_etmc.zeta, data.sd_params_etmc.zeta);
     end
     if data.meta.has_iso
-        fprintf('    \\Xi_3 / f_0        : %7.3f +/- %7.3f\n', data.params_etmc.Xi3, data.sd_params.Xi3);
+        fprintf('    \\Xi_3 / f_0        : %9.3f +/- %7.3f\n', data.params_etmc.Xi3, data.sd_params.Xi3);
     end
     fprintf('=========================================================\n');
     fprintf('  Fit quality details\n');
